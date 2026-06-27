@@ -22,8 +22,8 @@ export default function App() {
   if (!isSupabaseConfigured) return <SetupNotice />
   if (loading) return <LoadingScreen />
 
-  // Signed in but no name set yet -> force onboarding.
-  const needsOnboarding = session && profile && !profile.full_name?.trim()
+  // Signed in but no username set yet -> force onboarding.
+  const needsOnboarding = session && profile && !profile.username?.trim()
 
   return (
     <div className="min-h-screen">

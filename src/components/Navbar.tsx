@@ -27,7 +27,7 @@ export default function Navbar() {
             Leaderboard
           </NavLink>
           <span className="mx-1 hidden text-sm text-espresso-500 sm:inline">
-            {profile?.emoji} {profile?.full_name}
+            {profile?.emoji} {profile?.username}
           </span>
           <button onClick={signOut} className="btn-ghost text-sm">
             Sign out

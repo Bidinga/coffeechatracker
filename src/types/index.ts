@@ -1,6 +1,6 @@
 export interface Intern {
   id: string
-  full_name: string
+  username: string
   team: string | null
   emoji: string | null
   created_at: string
@@ -19,7 +19,7 @@ export interface CoffeeChat {
 
 export interface LeaderboardRow {
   id: string
-  full_name: string
+  username: string
   team: string | null
   emoji: string | null
   chat_count: number

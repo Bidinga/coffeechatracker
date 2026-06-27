@@ -57,7 +57,7 @@ export default function DashboardPage() {
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold">
-            Hey {profile?.full_name?.split(' ')[0]} {profile?.emoji}
+            Hey {profile?.username} {profile?.emoji}
           </h1>
           <p className="text-espresso-600">Keep the conversations brewing.</p>
         </div>

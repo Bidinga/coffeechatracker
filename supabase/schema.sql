@@ -9,7 +9,7 @@
 -- One row per intern. Linked to Supabase Auth users.
 create table if not exists public.interns (
   id          uuid primary key references auth.users (id) on delete cascade,
-  full_name   text not null default '',
+  username    text not null default '',  -- chosen by the user during onboarding
   team        text,
   emoji       text default '☕',          -- simple, free "avatar"
   created_at  timestamptz not null default now()
@@ -37,7 +37,7 @@ create index if not exists coffee_chats_chat_date_idx  on public.coffee_chats (c
 create or replace view public.leaderboard as
   select
     i.id,
-    i.full_name,
+    i.username,
     i.team,
     i.emoji,
     count(c.id)::int       as chat_count,
@@ -45,7 +45,7 @@ create or replace view public.leaderboard as
     count(distinct c.department) filter (where c.department is not null)::int as departments_met
   from public.interns i
   left join public.coffee_chats c on c.intern_id = i.id
-  group by i.id, i.full_name, i.team, i.emoji
+  group by i.id, i.username, i.team, i.emoji
   order by chat_count desc, last_chat desc nulls last;
 
 -- Let the anon/auth roles read the view.
@@ -105,8 +105,9 @@ create policy "delete own chats"
   using (auth.uid() = intern_id);
 
 -- ---------- AUTO-CREATE INTERN ON SIGNUP ----------
--- When a new auth user is created, make a matching interns row.
--- full_name is seeded from the email prefix; the user can edit it in Onboarding.
+-- When a new auth user is created, make a matching interns row with a BLANK
+-- username. The blank username is what triggers the Onboarding screen, where
+-- the user chooses their own display name.
 
 create or replace function public.handle_new_user()
 returns trigger
@@ -115,11 +116,8 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.interns (id, full_name)
-  values (
-    new.id,
-    coalesce(split_part(new.email, '@', 1), '')
-  )
+  insert into public.interns (id, username)
+  values (new.id, '')
   on conflict (id) do nothing;
   return new;
 end;

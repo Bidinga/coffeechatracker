@@ -19,18 +19,18 @@ const TEAMS = [
 export default function OnboardingPage() {
   const { user, profile, refreshProfile } = useAuth()
   const navigate = useNavigate()
-  const [fullName, setFullName] = useState(profile?.full_name ?? '')
+  const [username, setUsername] = useState(profile?.username ?? '')
   const [team, setTeam] = useState(profile?.team ?? '')
   const [emoji, setEmoji] = useState(profile?.emoji ?? '☕')
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    if (!fullName.trim() || !user) return
+    if (!username.trim() || !user) return
     setLoading(true)
     const { error } = await supabase
       .from('interns')
-      .update({ full_name: fullName.trim(), team: team || null, emoji })
+      .update({ username: username.trim(), team: team || null, emoji })
       .eq('id', user.id)
     setLoading(false)
     if (error) {
@@ -51,18 +51,22 @@ export default function OnboardingPage() {
           This is how you&apos;ll show up on the leaderboard.
         </p>
 
-        <label htmlFor="name" className="label">
-          Full name
+        <label htmlFor="username" className="label">
+          Username
         </label>
         <input
-          id="name"
+          id="username"
           required
           autoFocus
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          placeholder="Alex Rivera"
+          maxLength={30}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="alexcodes"
           className="input"
         />
+        <p className="mt-1 text-xs text-espresso-400">
+          This is the name shown on the leaderboard.
+        </p>
 
         <label htmlFor="team" className="label mt-4">
           Team

@@ -23,7 +23,7 @@ function Podium({ rows }: { rows: LeaderboardRow[] }) {
         >
           <div className="text-3xl">{row.emoji ?? '☕'}</div>
           <div className="max-w-full truncate text-sm font-semibold">
-            {row.full_name}
+            {row.username}
           </div>
           <div className="text-xs text-espresso-500">{row.chat_count} chats</div>
           <div
@@ -45,7 +45,7 @@ export default function LeaderboardPage({
   const { rows, loading } = useLeaderboard()
   const { profile } = useAuth()
 
-  const ranked = rows.filter((r) => r.full_name?.trim())
+  const ranked = rows.filter((r) => r.username?.trim())
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
@@ -95,7 +95,7 @@ export default function LeaderboardPage({
                   <div className="text-2xl">{row.emoji ?? '☕'}</div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 truncate font-semibold">
-                      {row.full_name}
+                      {row.username}
                       {isMe && (
                         <span className="rounded-full bg-espresso-700 px-2 py-0.5 text-xs font-medium text-cream">
                           you
