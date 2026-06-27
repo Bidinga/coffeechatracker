@@ -21,8 +21,8 @@ function formatDate(iso: string) {
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="card flex-1 p-4">
-      <div className="text-3xl font-extrabold text-espresso-800">{value}</div>
-      <div className="text-sm text-espresso-500">{label}</div>
+      <div className="font-display text-3xl font-bold text-navy-800">{value}</div>
+      <div className="text-sm text-navy-500">{label}</div>
     </div>
   )
 }
@@ -80,10 +80,10 @@ export default function DashboardPage() {
     <main className="mx-auto max-w-3xl px-4 py-8">
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold">
+          <h1 className="font-display text-2xl font-bold tracking-tight">
             Hey {profile?.username} {profile?.emoji}
           </h1>
-          <p className="text-espresso-600">Keep the conversations brewing.</p>
+          <p className="text-navy-600">Keep the conversations brewing.</p>
         </div>
         <button onClick={() => setModalOpen(true)} className="btn-primary">
           + Log a chat
@@ -105,12 +105,12 @@ export default function DashboardPage() {
       <h2 className="mb-3 text-lg font-bold">Your chats</h2>
 
       {loading ? (
-        <div className="py-12 text-center text-espresso-400">Loading…</div>
+        <div className="py-12 text-center text-navy-400">Loading…</div>
       ) : chats.length === 0 ? (
         <div className="card flex flex-col items-center px-6 py-12 text-center">
           <div className="mb-3 text-5xl">☕</div>
           <p className="mb-4 font-semibold">No chats logged yet</p>
-          <p className="mb-5 max-w-xs text-sm text-espresso-500">
+          <p className="mb-5 max-w-xs text-sm text-navy-500">
             Had a coffee with someone? Log it and start climbing the leaderboard.
           </p>
           <button onClick={() => setModalOpen(true)} className="btn-primary">
@@ -131,26 +131,26 @@ export default function DashboardPage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-semibold">{chat.person_name}</span>
                   {chat.person_title && (
-                    <span className="text-sm text-espresso-500">
+                    <span className="text-sm text-navy-500">
                       {chat.person_title}
                     </span>
                   )}
                   {chat.department && (
-                    <span className="rounded-full bg-espresso-100 px-2 py-0.5 text-xs font-medium text-espresso-700">
+                    <span className="rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-700">
                       {chat.department}
                     </span>
                   )}
                 </div>
                 {chat.notes && (
-                  <p className="mt-1 text-sm text-espresso-600">{chat.notes}</p>
+                  <p className="mt-1 text-sm text-navy-600">{chat.notes}</p>
                 )}
-                <p className="mt-1 text-xs text-espresso-400">
+                <p className="mt-1 text-xs text-navy-400">
                   {formatDate(chat.chat_date)}
                 </p>
               </div>
               <button
                 onClick={() => handleDelete(chat)}
-                className="shrink-0 rounded-lg px-2 py-1 text-sm text-espresso-400 opacity-0 transition hover:bg-red-50 hover:text-red-600 group-hover:opacity-100"
+                className="shrink-0 rounded-lg px-2 py-1 text-sm text-navy-400 opacity-0 transition hover:bg-red-50 hover:text-red-600 group-hover:opacity-100"
                 aria-label="Delete chat"
               >
                 Delete

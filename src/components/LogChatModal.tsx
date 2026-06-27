@@ -53,7 +53,7 @@ export default function LogChatModal({ open, onClose, onSave }: Props) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-30 flex items-end justify-center bg-espresso-900/40 p-0 sm:items-center sm:p-4"
+          className="fixed inset-0 z-30 flex items-end justify-center bg-navy-900/40 p-0 sm:items-center sm:p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

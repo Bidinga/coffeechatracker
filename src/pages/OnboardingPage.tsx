@@ -49,10 +49,10 @@ export default function OnboardingPage() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <form onSubmit={handleSubmit} className="card w-full max-w-md p-7">
         <div className="mb-1 text-4xl">{emoji}</div>
-        <h1 className="text-2xl font-extrabold">
+        <h1 className="font-display text-2xl font-bold tracking-tight">
           {isEditing ? 'Edit your profile' : 'Welcome! Set up your profile'}
         </h1>
-        <p className="mb-6 mt-1 text-sm text-espresso-600">
+        <p className="mb-6 mt-1 text-sm text-navy-600">
           This is how you&apos;ll show up on the leaderboard.
         </p>
 
@@ -69,7 +69,7 @@ export default function OnboardingPage() {
           placeholder="alexcodes"
           className="input"
         />
-        <p className="mt-1 text-xs text-espresso-400">
+        <p className="mt-1 text-xs text-navy-400">
           This is the name shown on the leaderboard.
         </p>
 
@@ -99,8 +99,8 @@ export default function OnboardingPage() {
               onClick={() => setEmoji(em)}
               className={`flex h-11 w-11 items-center justify-center rounded-xl border text-xl transition ${
                 emoji === em
-                  ? 'border-espresso-700 bg-espresso-100'
-                  : 'border-espresso-100 hover:bg-espresso-50'
+                  ? 'border-teal-400 bg-teal-50'
+                  : 'border-navy-100 hover:bg-navy-50'
               }`}
             >
               {em}

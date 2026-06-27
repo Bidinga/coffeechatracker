@@ -1,12 +1,12 @@
 -- =============================================================
 -- Coffee Chat Tracker — Supabase schema
 -- Run this in your Supabase project: SQL Editor -> New query -> paste -> Run
--- Safe to re-run (uses IF NOT EXISTS / CREATE OR REPLACE).
+-- Fully idempotent: safe to run on a brand-new project OR re-run on an
+-- existing one (including older versions that used `full_name`).
 -- =============================================================
 
 -- ---------- TABLES ----------
 
--- One row per intern. Linked to Supabase Auth users.
 create table if not exists public.interns (
   id          uuid primary key references auth.users (id) on delete cascade,
   username    text not null default '',  -- chosen by the user during onboarding
@@ -15,7 +15,23 @@ create table if not exists public.interns (
   created_at  timestamptz not null default now()
 );
 
--- One row per logged coffee chat.
+-- Upgrade older databases that still have `full_name`: rename it to `username`
+-- (only when needed, so this is safe to run repeatedly).
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'interns'
+      and column_name = 'full_name'
+  ) and not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'interns'
+      and column_name = 'username'
+  ) then
+    alter table public.interns rename column full_name to username;
+  end if;
+end $$;
+
 create table if not exists public.coffee_chats (
   id           uuid primary key default gen_random_uuid(),
   intern_id    uuid not null references public.interns (id) on delete cascade,
@@ -31,10 +47,12 @@ create index if not exists coffee_chats_intern_id_idx on public.coffee_chats (in
 create index if not exists coffee_chats_chat_date_idx  on public.coffee_chats (chat_date);
 
 -- ---------- LEADERBOARD VIEW ----------
--- Computed live from the tables. The frontend re-queries this whenever
--- a realtime change on coffee_chats fires.
+-- Computed live from the tables. The frontend re-queries this whenever a
+-- realtime change on coffee_chats fires. Dropped + recreated (not "create or
+-- replace") so re-running after a column rename never errors.
 
-create or replace view public.leaderboard as
+drop view if exists public.leaderboard;
+create view public.leaderboard as
   select
     i.id,
     i.username,
@@ -49,7 +67,6 @@ create or replace view public.leaderboard as
   group by i.id, i.username, i.team, i.emoji
   order by chat_count desc, last_chat desc nulls last;
 
--- Let the anon/auth roles read the view.
 grant select on public.leaderboard to anon, authenticated;
 
 -- ---------- ROW LEVEL SECURITY ----------
@@ -57,8 +74,6 @@ grant select on public.leaderboard to anon, authenticated;
 alter table public.interns      enable row level security;
 alter table public.coffee_chats enable row level security;
 
--- Interns: everyone signed in can READ all profiles (needed for the leaderboard),
--- but you can only INSERT/UPDATE your own row.
 drop policy if exists "read all interns" on public.interns;
 create policy "read all interns"
   on public.interns for select
@@ -78,8 +93,6 @@ create policy "update own intern"
   using (auth.uid() = id)
   with check (auth.uid() = id);
 
--- Coffee chats: everyone signed in can READ all rows (powers leaderboard counts),
--- but you can only write/edit/delete your own.
 drop policy if exists "read all chats" on public.coffee_chats;
 create policy "read all chats"
   on public.coffee_chats for select
@@ -106,9 +119,8 @@ create policy "delete own chats"
   using (auth.uid() = intern_id);
 
 -- ---------- AUTO-CREATE INTERN ON SIGNUP ----------
--- When a new auth user is created, make a matching interns row with a BLANK
--- username. The blank username is what triggers the Onboarding screen, where
--- the user chooses their own display name.
+-- New auth user -> matching interns row with a BLANK username. The blank
+-- username is what triggers the Onboarding screen so the user picks their own.
 
 create or replace function public.handle_new_user()
 returns trigger

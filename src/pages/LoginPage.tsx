@@ -28,10 +28,10 @@ export default function LoginPage() {
     <div className="flex min-h-screen flex-col items-center justify-center px-4">
       <div className="mb-8 text-center">
         <div className="mb-3 text-6xl">☕</div>
-        <h1 className="text-3xl font-extrabold tracking-tight">
-          Coffee Chat Tracker
+        <h1 className="font-display text-4xl font-bold tracking-tight text-navy-900">
+          Coffee <span className="text-teal-500">Chat</span> Tracker
         </h1>
-        <p className="mt-2 max-w-sm text-espresso-600">
+        <p className="mt-2 max-w-sm text-navy-600">
           Log your coffee chats, climb the leaderboard, meet everyone.
         </p>
       </div>
@@ -41,7 +41,7 @@ export default function LoginPage() {
           <div className="text-center">
             <div className="mb-3 text-4xl">📬</div>
             <h2 className="mb-1 text-lg font-bold">Check your email</h2>
-            <p className="text-sm text-espresso-600">
+            <p className="text-sm text-navy-600">
               We sent a magic sign-in link to{' '}
               <span className="font-semibold">{email}</span>. Click it to log in.
             </p>
@@ -74,7 +74,7 @@ export default function LoginPage() {
             >
               {loading ? 'Sending…' : 'Send magic link'}
             </button>
-            <p className="mt-3 text-center text-xs text-espresso-500">
+            <p className="mt-3 text-center text-xs text-navy-500">
               No password needed — we&apos;ll email you a one-click sign-in link.
             </p>
           </form>
@@ -83,7 +83,7 @@ export default function LoginPage() {
 
       <Link
         to="/leaderboard"
-        className="mt-6 text-sm font-semibold text-espresso-600 underline-offset-4 hover:underline"
+        className="mt-6 text-sm font-semibold text-navy-600 underline-offset-4 hover:underline"
       >
         Peek at the leaderboard →
       </Link>

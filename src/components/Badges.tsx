@@ -8,7 +8,7 @@ export default function Badges({ achievements }: { achievements: Achievement[] }
     <section className="mb-8">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-lg font-bold">Achievements</h2>
-        <span className="text-sm text-espresso-500">
+        <span className="text-sm text-navy-500">
           {earnedCount}/{achievements.length} unlocked
         </span>
       </div>
@@ -25,7 +25,7 @@ export default function Badges({ achievements }: { achievements: Achievement[] }
             <div className="text-2xl">{a.earned ? a.emoji : '🔒'}</div>
             <div className="min-w-0">
               <div className="truncate text-sm font-semibold">{a.title}</div>
-              <div className="truncate text-xs text-espresso-500">
+              <div className="truncate text-xs text-navy-500">
                 {a.description}
               </div>
             </div>

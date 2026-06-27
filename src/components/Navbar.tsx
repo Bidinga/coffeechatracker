@@ -7,16 +7,18 @@ export default function Navbar() {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
       isActive
-        ? 'bg-espresso-700 text-cream'
-        : 'text-espresso-700 hover:bg-espresso-100'
+        ? 'bg-navy-700 text-white'
+        : 'text-navy-700 hover:bg-navy-100'
     }`
 
   return (
-    <header className="sticky top-0 z-20 border-b border-espresso-100 bg-cream/80 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-navy-100 bg-mist/80 backdrop-blur">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2 font-extrabold tracking-tight">
+        <div className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
           <span className="text-xl">☕</span>
-          <span className="hidden sm:inline">Coffee Chat Tracker</span>
+          <span className="hidden sm:inline">
+            Coffee <span className="text-teal-500">Chat</span> Tracker
+          </span>
         </div>
 
         <div className="flex items-center gap-1 sm:gap-2">
@@ -28,7 +30,7 @@ export default function Navbar() {
           </NavLink>
           <NavLink
             to="/onboarding"
-            className="mx-1 hidden rounded-lg px-2 py-1 text-sm text-espresso-600 transition hover:bg-espresso-100 sm:inline"
+            className="mx-1 hidden rounded-lg px-2 py-1 text-sm text-navy-600 transition hover:bg-navy-100 sm:inline"
             title="Edit your profile"
           >
             {profile?.emoji} {profile?.username}

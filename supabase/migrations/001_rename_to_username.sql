@@ -7,8 +7,23 @@
 -- (Fresh installs don't need this — supabase/schema.sql is already updated.)
 -- =============================================================
 
--- 1. Rename the column.
-alter table public.interns rename column full_name to username;
+-- 1. Rename the column — only if it still needs it (safe to re-run).
+--    If you got an error here before, it's because the column was already
+--    renamed or the base schema was never run. This guard handles both.
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'interns'
+      and column_name = 'full_name'
+  ) and not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'interns'
+      and column_name = 'username'
+  ) then
+    alter table public.interns rename column full_name to username;
+  end if;
+end $$;
 
 -- 2. Recreate the leaderboard view so its output column is `username`.
 --    (A view's output column can't be renamed in place, so we drop + recreate.)

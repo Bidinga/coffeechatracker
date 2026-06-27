@@ -3,7 +3,7 @@ import confetti from 'canvas-confetti'
 /** A short, festive burst — fired when a user hits a chat milestone. */
 export function celebrate() {
   const end = Date.now() + 800
-  const colors = ['#7E5326', '#B5874F', '#E0CBB3', '#FBF7F0']
+  const colors = ['#0A2236', '#1E4F70', '#27A9C4', '#93D9E6']
 
   ;(function frame() {
     confetti({

@@ -34,9 +34,9 @@ function Podium({
           <div className="max-w-full truncate text-sm font-semibold">
             {row.username}
           </div>
-          <div className="text-xs text-espresso-500">{count(row)} chats</div>
+          <div className="text-xs text-navy-500">{count(row)} chats</div>
           <div
-            className={`mt-2 flex w-full items-start justify-center rounded-t-xl bg-espresso-200 pt-2 ${heights[i]}`}
+            className={`mt-2 flex w-full items-start justify-center rounded-t-xl bg-navy-200 pt-2 ${heights[i]}`}
           >
             <span className="text-2xl">{MEDALS[rank[i] - 1]}</span>
           </div>
@@ -75,11 +75,13 @@ export default function LeaderboardPage({
     <main className="mx-auto max-w-2xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold">Leaderboard ☕</h1>
-          <p className="flex items-center gap-1.5 text-sm text-espresso-500">
+          <h1 className="font-display text-2xl font-bold tracking-tight">
+            Leaderboard ☕
+          </h1>
+          <p className="flex items-center gap-1.5 text-sm text-navy-500">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-500" />
             </span>
             Live — updates in real time
           </p>
@@ -93,19 +95,19 @@ export default function LeaderboardPage({
 
       {/* Team total + timeframe toggle */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-espresso-600">
-          <span className="font-bold text-espresso-800">{teamTotal}</span> coffee
+        <p className="text-sm text-navy-600">
+          <span className="font-bold text-navy-800">{teamTotal}</span> coffee
           chats logged across the team 🎉
         </p>
-        <div className="flex rounded-xl border border-espresso-100 bg-white p-1">
+        <div className="flex rounded-xl border border-navy-100 bg-white p-1">
           {(['all', 'week'] as Timeframe[]).map((tf) => (
             <button
               key={tf}
               onClick={() => setTimeframe(tf)}
               className={`rounded-lg px-3 py-1 text-sm font-semibold transition ${
                 timeframe === tf
-                  ? 'bg-espresso-700 text-cream'
-                  : 'text-espresso-600 hover:bg-espresso-50'
+                  ? 'bg-navy-700 text-white'
+                  : 'text-navy-600 hover:bg-navy-50'
               }`}
             >
               {tf === 'all' ? 'All-time' : 'This week'}
@@ -115,9 +117,9 @@ export default function LeaderboardPage({
       </div>
 
       {loading ? (
-        <div className="py-12 text-center text-espresso-400">Loading…</div>
+        <div className="py-12 text-center text-navy-400">Loading…</div>
       ) : ranked.length === 0 ? (
-        <div className="card px-6 py-12 text-center text-espresso-500">
+        <div className="card px-6 py-12 text-center text-navy-500">
           {timeframe === 'week'
             ? 'No chats logged this week yet. Be the first! ☕'
             : 'No chats logged yet. Be the first! ☕'}
@@ -135,10 +137,10 @@ export default function LeaderboardPage({
                   layout
                   transition={{ type: 'spring', damping: 30, stiffness: 350 }}
                   className={`card flex items-center gap-3 p-3.5 ${
-                    isMe ? 'ring-2 ring-espresso-500' : ''
+                    isMe ? 'ring-2 ring-teal-400' : ''
                   }`}
                 >
-                  <div className="w-8 text-center text-lg font-bold text-espresso-400">
+                  <div className="w-8 text-center text-lg font-bold text-navy-400">
                     {i < 3 ? MEDALS[i] : i + 1}
                   </div>
                   <div className="text-2xl">{row.emoji ?? '☕'}</div>
@@ -146,20 +148,20 @@ export default function LeaderboardPage({
                     <div className="flex items-center gap-2 truncate font-semibold">
                       {row.username}
                       {isMe && (
-                        <span className="rounded-full bg-espresso-700 px-2 py-0.5 text-xs font-medium text-cream">
+                        <span className="rounded-full bg-teal-500 px-2 py-0.5 text-xs font-medium text-white">
                           you
                         </span>
                       )}
                     </div>
                     {row.team && (
-                      <div className="text-xs text-espresso-500">{row.team}</div>
+                      <div className="text-xs text-navy-500">{row.team}</div>
                     )}
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-extrabold text-espresso-800">
+                    <div className="font-display text-xl font-bold text-navy-800">
                       {count(row)}
                     </div>
-                    <div className="text-xs text-espresso-400">chats</div>
+                    <div className="text-xs text-navy-400">chats</div>
                   </div>
                 </motion.li>
               )
