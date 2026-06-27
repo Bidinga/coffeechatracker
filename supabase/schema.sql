@@ -41,6 +41,7 @@ create or replace view public.leaderboard as
     i.team,
     i.emoji,
     count(c.id)::int       as chat_count,
+    count(c.id) filter (where c.chat_date >= current_date - interval '7 days')::int as chats_this_week,
     max(c.chat_date)       as last_chat,
     count(distinct c.department) filter (where c.department is not null)::int as departments_met
   from public.interns i

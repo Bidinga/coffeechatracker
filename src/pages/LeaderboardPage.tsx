@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useLeaderboard } from '../hooks/useLeaderboard'
@@ -6,7 +7,15 @@ import type { LeaderboardRow } from '../types'
 
 const MEDALS = ['🥇', '🥈', '🥉']
 
-function Podium({ rows }: { rows: LeaderboardRow[] }) {
+type Timeframe = 'all' | 'week'
+
+function Podium({
+  rows,
+  count,
+}: {
+  rows: LeaderboardRow[]
+  count: (row: LeaderboardRow) => number
+}) {
   // Display order: 2nd, 1st, 3rd for the classic podium shape.
   const order = [rows[1], rows[0], rows[2]].filter(Boolean)
   const heights = ['h-24', 'h-32', 'h-20']
@@ -25,7 +34,7 @@ function Podium({ rows }: { rows: LeaderboardRow[] }) {
           <div className="max-w-full truncate text-sm font-semibold">
             {row.username}
           </div>
-          <div className="text-xs text-espresso-500">{row.chat_count} chats</div>
+          <div className="text-xs text-espresso-500">{count(row)} chats</div>
           <div
             className={`mt-2 flex w-full items-start justify-center rounded-t-xl bg-espresso-200 pt-2 ${heights[i]}`}
           >
@@ -44,8 +53,23 @@ export default function LeaderboardPage({
 }) {
   const { rows, loading } = useLeaderboard()
   const { profile } = useAuth()
+  const [timeframe, setTimeframe] = useState<Timeframe>('all')
 
-  const ranked = rows.filter((r) => r.username?.trim())
+  const count = (row: LeaderboardRow) =>
+    timeframe === 'week' ? row.chats_this_week : row.chat_count
+
+  // Everyone who has a username AND a chat in the selected timeframe, ranked.
+  const ranked = useMemo(() => {
+    return rows
+      .filter((r) => r.username?.trim() && count(r) > 0)
+      .sort((a, b) => count(b) - count(a))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rows, timeframe])
+
+  const teamTotal = useMemo(
+    () => rows.reduce((sum, r) => sum + r.chat_count, 0),
+    [rows],
+  )
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
@@ -67,15 +91,40 @@ export default function LeaderboardPage({
         )}
       </div>
 
+      {/* Team total + timeframe toggle */}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-espresso-600">
+          <span className="font-bold text-espresso-800">{teamTotal}</span> coffee
+          chats logged across the team 🎉
+        </p>
+        <div className="flex rounded-xl border border-espresso-100 bg-white p-1">
+          {(['all', 'week'] as Timeframe[]).map((tf) => (
+            <button
+              key={tf}
+              onClick={() => setTimeframe(tf)}
+              className={`rounded-lg px-3 py-1 text-sm font-semibold transition ${
+                timeframe === tf
+                  ? 'bg-espresso-700 text-cream'
+                  : 'text-espresso-600 hover:bg-espresso-50'
+              }`}
+            >
+              {tf === 'all' ? 'All-time' : 'This week'}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {loading ? (
         <div className="py-12 text-center text-espresso-400">Loading…</div>
       ) : ranked.length === 0 ? (
         <div className="card px-6 py-12 text-center text-espresso-500">
-          No chats logged yet. Be the first! ☕
+          {timeframe === 'week'
+            ? 'No chats logged this week yet. Be the first! ☕'
+            : 'No chats logged yet. Be the first! ☕'}
         </div>
       ) : (
         <>
-          {ranked.length >= 3 && <Podium rows={ranked} />}
+          {ranked.length >= 3 && <Podium rows={ranked} count={count} />}
 
           <ul className="space-y-2">
             {ranked.map((row, i) => {
@@ -108,7 +157,7 @@ export default function LeaderboardPage({
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-extrabold text-espresso-800">
-                      {row.chat_count}
+                      {count(row)}
                     </div>
                     <div className="text-xs text-espresso-400">chats</div>
                   </div>

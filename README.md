@@ -12,11 +12,20 @@ Built with **React + TypeScript + Vite + Tailwind**, backed by **Supabase**
 ## What it does
 
 - **Magic-link login** — no passwords. Interns enter their email, click the link.
+- **Pick a username** — chosen on first login; editable anytime from the navbar.
 - **Log coffee chats** — who, their title, department, date, notes.
-- **Personal dashboard** — total chats, chats this week, departments met.
+- **Personal dashboard** — total chats, chats this week, departments met, and
+  your live rank.
+- **Achievements** — auto-earned badges (First Sip, 10 Club, Cross-Dept
+  Explorer, On Fire, …).
+- **Milestone confetti** 🎉 — a celebration when you hit 1, 5, 10, 25… chats.
 - **Live leaderboard** — ranks update in real time across every open browser
-  (Supabase Realtime). Public — anyone can peek without signing in.
-- **Profiles** — name, team, emoji avatar.
+  (Supabase Realtime), with an **All-time / This week** toggle and a team total.
+  Public — anyone can peek without signing in.
+- **Profiles** — username, team, emoji avatar.
+
+> Already ran the schema before? Run [`supabase/migrations/001_rename_to_username.sql`](supabase/migrations/001_rename_to_username.sql)
+> once in the SQL Editor to pick up the `username` rename and weekly leaderboard.
 
 ---
 

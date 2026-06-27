@@ -24,6 +24,9 @@ export default function OnboardingPage() {
   const [emoji, setEmoji] = useState(profile?.emoji ?? '☕')
   const [loading, setLoading] = useState(false)
 
+  // First-time setup vs. editing an existing profile.
+  const isEditing = Boolean(profile?.username?.trim())
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!username.trim() || !user) return
@@ -38,7 +41,7 @@ export default function OnboardingPage() {
       return
     }
     await refreshProfile()
-    toast.success('Profile saved!')
+    toast.success(isEditing ? 'Profile updated!' : 'Profile saved!')
     navigate('/')
   }
 
@@ -46,7 +49,9 @@ export default function OnboardingPage() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <form onSubmit={handleSubmit} className="card w-full max-w-md p-7">
         <div className="mb-1 text-4xl">{emoji}</div>
-        <h1 className="text-2xl font-extrabold">Welcome! Set up your profile</h1>
+        <h1 className="text-2xl font-extrabold">
+          {isEditing ? 'Edit your profile' : 'Welcome! Set up your profile'}
+        </h1>
         <p className="mb-6 mt-1 text-sm text-espresso-600">
           This is how you&apos;ll show up on the leaderboard.
         </p>
@@ -103,13 +108,28 @@ export default function OnboardingPage() {
           ))}
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="btn-primary mt-6 w-full"
-        >
-          {loading ? 'Saving…' : 'Start tracking ☕'}
-        </button>
+        <div className="mt-6 flex gap-2">
+          {isEditing && (
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="btn-ghost flex-1"
+            >
+              Cancel
+            </button>
+          )}
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary flex-1"
+          >
+            {loading
+              ? 'Saving…'
+              : isEditing
+                ? 'Save changes'
+                : 'Start tracking ☕'}
+          </button>
+        </div>
       </form>
     </div>
   )

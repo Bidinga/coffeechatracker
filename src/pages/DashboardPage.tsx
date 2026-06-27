@@ -3,8 +3,12 @@ import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import { useAuth } from '../hooks/useAuth'
 import { useCoffeeChats } from '../hooks/useCoffeeChats'
+import { useLeaderboard } from '../hooks/useLeaderboard'
 import LogChatModal from '../components/LogChatModal'
-import type { CoffeeChat } from '../types'
+import Badges from '../components/Badges'
+import { computeAchievements, MILESTONES } from '../lib/achievements'
+import { celebrate } from '../lib/confetti'
+import type { CoffeeChat, NewCoffeeChat } from '../types'
 
 function formatDate(iso: string) {
   return new Date(iso + 'T00:00:00').toLocaleDateString(undefined, {
@@ -26,6 +30,7 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
 export default function DashboardPage() {
   const { profile } = useAuth()
   const { chats, loading, addChat, deleteChat } = useCoffeeChats(profile?.id)
+  const { rows } = useLeaderboard()
   const [modalOpen, setModalOpen] = useState(false)
 
   const uniqueDepartments = useMemo(() => {
@@ -41,6 +46,25 @@ export default function DashboardPage() {
     return chats.filter((c) => new Date(c.chat_date + 'T00:00:00') >= weekAgo)
       .length
   }, [chats])
+
+  const achievements = useMemo(() => computeAchievements(chats), [chats])
+
+  // The user's rank among everyone who has a username set.
+  const rank = useMemo(() => {
+    const ranked = rows.filter((r) => r.username?.trim())
+    const idx = ranked.findIndex((r) => r.id === profile?.id)
+    return idx >= 0 ? { position: idx + 1, total: ranked.length } : null
+  }, [rows, profile?.id])
+
+  // Wrap addChat so we can fire confetti when a milestone is reached.
+  async function handleSave(chat: NewCoffeeChat) {
+    const nextCount = chats.length + 1
+    await addChat(chat)
+    if (MILESTONES.includes(nextCount)) {
+      celebrate()
+      toast.success(`🎉 Milestone! ${nextCount} coffee chats logged`)
+    }
+  }
 
   async function handleDelete(chat: CoffeeChat) {
     if (!confirm(`Delete your chat with ${chat.person_name}?`)) return
@@ -66,11 +90,17 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      <div className="mb-8 flex gap-3">
+      <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard label="Total chats" value={chats.length} />
         <StatCard label="This week" value={thisWeek} />
         <StatCard label="Departments met" value={uniqueDepartments} />
+        <StatCard
+          label={rank ? `Your rank of ${rank.total}` : 'Your rank'}
+          value={rank ? `#${rank.position}` : '—'}
+        />
       </div>
+
+      {chats.length > 0 && <Badges achievements={achievements} />}
 
       <h2 className="mb-3 text-lg font-bold">Your chats</h2>
 
@@ -133,7 +163,7 @@ export default function DashboardPage() {
       <LogChatModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        onSave={addChat}
+        onSave={handleSave}
       />
     </main>
   )

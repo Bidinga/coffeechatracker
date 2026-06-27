@@ -23,6 +23,7 @@ export interface LeaderboardRow {
   team: string | null
   emoji: string | null
   chat_count: number
+  chats_this_week: number
   last_chat: string | null
   departments_met: number
 }

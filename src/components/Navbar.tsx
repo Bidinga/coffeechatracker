@@ -26,9 +26,13 @@ export default function Navbar() {
           <NavLink to="/leaderboard" className={linkClass}>
             Leaderboard
           </NavLink>
-          <span className="mx-1 hidden text-sm text-espresso-500 sm:inline">
+          <NavLink
+            to="/onboarding"
+            className="mx-1 hidden rounded-lg px-2 py-1 text-sm text-espresso-600 transition hover:bg-espresso-100 sm:inline"
+            title="Edit your profile"
+          >
             {profile?.emoji} {profile?.username}
-          </span>
+          </NavLink>
           <button onClick={signOut} className="btn-ghost text-sm">
             Sign out
           </button>
