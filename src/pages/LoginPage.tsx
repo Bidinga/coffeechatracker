@@ -55,7 +55,7 @@ export default function LoginPage() {
         ) : (
           <form onSubmit={handleSubmit}>
             <label htmlFor="email" className="label">
-              Work email
+              Personal email
             </label>
             <input
               id="email"
