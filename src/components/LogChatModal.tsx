@@ -43,7 +43,13 @@ export default function LogChatModal({ open, onClose, onSave }: Props) {
       reset()
       onClose()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Something went wrong')
+      // 23505 = Postgres unique-violation (our one-chat-per-person-per-day rule).
+      const code = (err as { code?: string })?.code
+      if (code === '23505') {
+        toast.error('You already logged a chat with this person on that date.')
+      } else {
+        toast.error(err instanceof Error ? err.message : 'Something went wrong')
+      }
     } finally {
       setSaving(false)
     }

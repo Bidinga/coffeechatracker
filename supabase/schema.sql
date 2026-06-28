@@ -46,6 +46,26 @@ create table if not exists public.coffee_chats (
 create index if not exists coffee_chats_intern_id_idx on public.coffee_chats (intern_id);
 create index if not exists coffee_chats_chat_date_idx  on public.coffee_chats (chat_date);
 
+-- Prevent accidental duplicates: at most one chat per person (case/space-
+-- insensitive name) per day per intern. This also makes inserts effectively
+-- idempotent against double-clicks and network retries.
+-- First remove any pre-existing duplicates (keep the earliest of each group)
+-- so the unique index can be built.
+delete from public.coffee_chats
+where id in (
+  select id from (
+    select id, row_number() over (
+      partition by intern_id, lower(trim(person_name)), chat_date
+      order by created_at, id
+    ) as rn
+    from public.coffee_chats
+  ) t
+  where rn > 1
+);
+
+create unique index if not exists coffee_chats_one_per_person_per_day
+  on public.coffee_chats (intern_id, lower(trim(person_name)), chat_date);
+
 -- ---------- LEADERBOARD VIEW ----------
 -- Computed live from the tables. The frontend re-queries this whenever a
 -- realtime change on coffee_chats fires. Dropped + recreated (not "create or
