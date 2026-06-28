@@ -66,11 +66,41 @@ export default function DashboardPage() {
     }
   }
 
+  async function restoreChat(chat: CoffeeChat) {
+    try {
+      await addChat({
+        person_name: chat.person_name,
+        person_title: chat.person_title,
+        department: chat.department,
+        chat_date: chat.chat_date,
+        notes: chat.notes,
+      })
+      toast.success('Chat restored')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Could not restore')
+    }
+  }
+
   async function handleDelete(chat: CoffeeChat) {
-    if (!confirm(`Delete your chat with ${chat.person_name}?`)) return
     try {
       await deleteChat(chat.id)
-      toast.success('Deleted')
+      toast(
+        (t) => (
+          <span className="flex items-center gap-3">
+            Deleted chat with {chat.person_name}
+            <button
+              onClick={() => {
+                toast.dismiss(t.id)
+                restoreChat(chat)
+              }}
+              className="rounded-md px-2 py-0.5 font-bold text-teal-300 hover:text-teal-200"
+            >
+              Undo
+            </button>
+          </span>
+        ),
+        { duration: 6000 },
+      )
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Delete failed')
     }
