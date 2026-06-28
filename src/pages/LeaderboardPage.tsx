@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useLeaderboard } from '../hooks/useLeaderboard'
 import { useAuth } from '../hooks/useAuth'
@@ -46,11 +45,7 @@ function Podium({
   )
 }
 
-export default function LeaderboardPage({
-  publicView = false,
-}: {
-  publicView?: boolean
-}) {
+export default function LeaderboardPage() {
   const { rows, loading } = useLeaderboard()
   const { profile } = useAuth()
   const [timeframe, setTimeframe] = useState<Timeframe>('all')
@@ -86,11 +81,6 @@ export default function LeaderboardPage({
             Live — updates in real time
           </p>
         </div>
-        {publicView && (
-          <Link to="/login" className="btn-primary text-sm">
-            Sign in
-          </Link>
-        )}
       </div>
 
       {/* Team total + timeframe toggle */}

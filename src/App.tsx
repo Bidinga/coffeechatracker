@@ -32,7 +32,6 @@ export default function App() {
         {!session ? (
           <>
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/leaderboard" element={<LeaderboardPage publicView />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </>
         ) : needsOnboarding ? (

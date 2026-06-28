@@ -1,5 +1,4 @@
 import { useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase'
 
@@ -80,13 +79,6 @@ export default function LoginPage() {
           </form>
         )}
       </div>
-
-      <Link
-        to="/leaderboard"
-        className="mt-6 text-sm font-semibold text-navy-600 underline-offset-4 hover:underline"
-      >
-        Peek at the leaderboard →
-      </Link>
     </div>
   )
 }

@@ -67,18 +67,25 @@ create view public.leaderboard as
   group by i.id, i.username, i.team, i.emoji
   order by chat_count desc, last_chat desc nulls last;
 
-grant select on public.leaderboard to anon, authenticated;
+-- Leaderboard is for signed-in interns only: grant to authenticated, and
+-- explicitly revoke anon so logged-out visitors get nothing.
+grant select on public.leaderboard to authenticated;
+revoke select on public.leaderboard from anon;
 
 -- ---------- ROW LEVEL SECURITY ----------
 
 alter table public.interns      enable row level security;
 alter table public.coffee_chats enable row level security;
 
+-- You can only read YOUR OWN profile row via the API. The leaderboard's
+-- display names come from the `leaderboard` view (which aggregates safely),
+-- not from reading this table directly.
 drop policy if exists "read all interns" on public.interns;
-create policy "read all interns"
+drop policy if exists "read own intern" on public.interns;
+create policy "read own intern"
   on public.interns for select
   to authenticated
-  using (true);
+  using (auth.uid() = id);
 
 drop policy if exists "insert own intern" on public.interns;
 create policy "insert own intern"
@@ -93,11 +100,15 @@ create policy "update own intern"
   using (auth.uid() = id)
   with check (auth.uid() = id);
 
+-- You can only read YOUR OWN chats (this keeps notes / who-you-met private).
+-- Leaderboard counts are computed by the view, which runs with owner
+-- privileges and so can still count everyone's chats without exposing rows.
 drop policy if exists "read all chats" on public.coffee_chats;
-create policy "read all chats"
+drop policy if exists "read own chats" on public.coffee_chats;
+create policy "read own chats"
   on public.coffee_chats for select
   to authenticated
-  using (true);
+  using (auth.uid() = intern_id);
 
 drop policy if exists "insert own chats" on public.coffee_chats;
 create policy "insert own chats"
