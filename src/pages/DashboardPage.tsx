@@ -150,7 +150,7 @@ export default function DashboardPage() {
               </div>
               <button
                 onClick={() => handleDelete(chat)}
-                className="shrink-0 rounded-lg px-2 py-1 text-sm text-navy-400 opacity-0 transition hover:bg-red-50 hover:text-red-600 group-hover:opacity-100"
+                className="shrink-0 rounded-lg px-2 py-1 text-sm font-medium text-navy-400 transition hover:bg-red-50 hover:text-red-600"
                 aria-label="Delete chat"
               >
                 Delete
